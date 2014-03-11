@@ -5,7 +5,6 @@
     [ring.util.response :only [status response]]
     org.httpkit.server)
   (:require 
-    [langohr.core :as rmq]
     [clojure.edn :as edn]
     [compojure.route :as route]
     [ring.middleware.multipart-params :as mp]
