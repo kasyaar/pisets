@@ -7,7 +7,6 @@
   (:require 
     [clojure.edn :as edn]
     [compojure.route :as route]
-    [ring.middleware.multipart-params :as mp]
     [clojure.java.io :as io])
   (:gen-class))
 

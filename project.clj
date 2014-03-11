@@ -9,5 +9,6 @@
   :uberjar-name "pisets.jar"
   :dependencies [
                  [http-kit "2.1.16"]
+                 [ring "1.2.1"]
                  [compojure "1.1.6"]
                  [org.clojure/clojure "1.5.1"]])
