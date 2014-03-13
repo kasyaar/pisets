@@ -36,6 +36,13 @@
         message (create-message filename)
         file (io/file filename)]
     (io/copy (slurp body) file)
+    (let [conn (rmq/connect)
+          ch (lch/open conn)
+          qname "pisets.tasks"]
+      (lq/declare ch qname :exclusive false :auto-delete true)
+      (lb/publish ch "" qname message :content-type "application/json" :type "pisets.task")
+      (rmq/close ch)
+      rmq/close conn)
     (println message)
     {:status 201}))
 
