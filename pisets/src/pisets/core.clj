@@ -3,11 +3,18 @@
     compojure.core
     [compojure.handler :only [site]]
     [ring.util.response :only [status response]]
+    [cheshire.core :only [generate-string]]
     org.httpkit.server)
   (:require 
     [clojure.edn :as edn]
     [compojure.route :as route]
-    [clojure.java.io :as io])
+    [clojure.java.io :as io]
+    ; rabbit lib
+    [langohr.core      :as rmq]
+    [langohr.channel   :as lch]
+    [langohr.queue     :as lq]
+    [langohr.consumers :as lc]
+    [langohr.basic     :as lb])
   (:gen-class))
 
 ; TODO:
@@ -21,14 +28,20 @@
 
 (def config (promise))
 
-(defn handle "doc-string" [bookname body]
-  (let [file (io/file (str (@config :upload-dir) bookname))]
+(defn create-message "creating a message for queue" [filepath]
+  (generate-string {:path filepath}))
+
+(defn store-book "doc-string" [bookname body]
+  (let [filename (str (@config :upload-dir) bookname)
+        message (create-message filename)
+        file (io/file filename)]
     (io/copy (slurp body) file)
+    (println message)
     {:status 201}))
 
 (defroutes books-api
   (POST "/:name" {{bookname :name} :params body :body} 
-          (handle bookname body)))
+          (store-book bookname body)))
 
 (defroutes all-routes
   (context "/books" [] books-api))
