@@ -33,9 +33,8 @@ class App():
             if method_frame:
                 message = json.loads(body)
                 path = message[u'path']
-                # print method_frame, header_frame, body
-                print message[u'path']
-                main(['/usr/bin/ebook-convert', path, splitext(path)[0] + ".mobi"])
+                print message
+                main(['/usr/bin/ebook-convert', path, splitext(path)[0] + "." + message[u'to']])
                 ch.basic_ack(method_frame.delivery_tag)
             else:
                 print("No message returned")

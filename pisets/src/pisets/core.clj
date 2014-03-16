@@ -28,12 +28,12 @@
 
 (def config (promise))
 
-(defn create-message "creating a message for queue" [filepath]
-  (generate-string {:path filepath}))
+(defn create-message "creating a message for queue" [filepath out-fmt]
+  (generate-string {:path filepath :to out-fmt}))
 
-(defn store-book "doc-string" [bookname body]
+(defn store-book "doc-string" [bookname out-fmt body]
   (let [filename (str (@config :upload-dir) bookname)
-        message (create-message filename)
+        message (create-message filename out-fmt)
         file (io/file filename)]
     (io/copy (slurp body) file)
     (let [conn (rmq/connect)
@@ -47,8 +47,8 @@
     {:status 201}))
 
 (defroutes books-api
-  (POST "/:name" {{bookname :name} :params body :body} 
-          (store-book bookname body)))
+  (POST "/:name" {{bookname :name out-fmt :to} :params :as params body :body} 
+          (store-book bookname out-fmt body)))
 
 (defroutes all-routes
   (context "/books" [] books-api))
