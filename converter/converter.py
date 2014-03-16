@@ -1,7 +1,21 @@
 #!/usr/bin/python
 import time
 from daemon import runner
-import pika
+from macpath import splitext
+import pika, json
+import sys, os
+
+path = os.environ.get('CALIBRE_PYTHON_PATH', '/usr/lib/calibre')
+if path not in sys.path:
+    sys.path.insert(0, path)
+
+sys.resources_location = os.environ.get('CALIBRE_RESOURCES_PATH', '/usr/share/calibre')
+sys.extensions_location = os.environ.get('CALIBRE_EXTENSIONS_PATH', '/usr/lib/calibre/calibre/plugins')
+sys.executables_location = os.environ.get('CALIBRE_EXECUTABLES_PATH', '/usr/bin')
+
+
+from calibre.ebooks.conversion.cli import main
+
 
 
 class App():
@@ -17,7 +31,11 @@ class App():
             ch =  conn.channel()
             method_frame, header_frame, body = ch.basic_get(queue = "pisets.tasks", no_ack = True)
             if method_frame:
-                print method_frame, header_frame, body
+                message = json.loads(body)
+                path = message[u'path']
+                # print method_frame, header_frame, body
+                print message[u'path']
+                main(['/usr/bin/ebook-convert', path, splitext(path)[0] + ".mobi"])
                 ch.basic_ack(method_frame.delivery_tag)
             else:
                 print("No message returned")
