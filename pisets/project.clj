@@ -7,7 +7,16 @@
   :main pisets.core
   :aot [pisets.core]
   :uberjar-name "pisets.jar"
+  :plugins [[lein-cljsbuild "1.0.2"]]
+  :cljsbuild {
+              :builds [{
+                        :source-paths ["src-cljs"]
+                        :compiler {
+                                   :output-to "/tmp/main.js"
+                                   :optimiztions :whitespace
+                                   :pretty-print true}}]}
   :dependencies [
+                 [tailrecursion/javelin "3.1.1"]
                  [http-kit "2.1.16"]
                  [com.novemberain/langohr "2.7.1"]
                  [cheshire "5.3.1"]
