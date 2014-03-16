@@ -7,7 +7,9 @@
   :main pisets.core
   :aot [pisets.core]
   :uberjar-name "pisets.jar"
-  :plugins [[lein-cljsbuild "1.0.2"]]
+  :plugins [
+            [lein-gorilla "0.1.2"]
+            [lein-cljsbuild "1.0.2"]]
   :cljsbuild {
               :builds [{
                         :source-paths ["src-cljs"]

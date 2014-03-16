@@ -29,7 +29,7 @@ class App():
         while True:
             conn = pika.BlockingConnection()
             ch =  conn.channel()
-            method_frame, header_frame, body = ch.basic_get(queue = "pisets.tasks", no_ack = True)
+            method_frame, header_frame, body = ch.basic_get(queue = "pisets.tasks")
             if method_frame:
                 message = json.loads(body)
                 path = message[u'path']
